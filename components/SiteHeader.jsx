@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
+import Image from "next/image";
 import { Phone } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -28,10 +29,14 @@ export default function SiteHeader({ brand, nav, onNav, rightSlot, subtitle = ""
           className="flex items-center gap-3 text-left focus:outline-none shrink-0"
         >
           {brand?.logoUrl ? (
-            <img 
-              src={brand.logoUrl} 
-              alt={brand?.name || "Logo"} 
-              className="h-12 w-auto shrink-0 object-contain mix-blend-multiply" style={{ filter: "invert(1)" }}
+            <Image
+              src={brand.logoUrl}
+              alt={brand?.name || "Logo"}
+              height={48}
+              width={0}
+              className="h-12 shrink-0 object-contain mix-blend-multiply"
+              style={{ width: "auto", filter: "invert(1)" }}
+              priority
             />
           ) : null}
           <span className="text-sm font-medium text-[#333333] tracking-tight whitespace-nowrap hidden sm:block">

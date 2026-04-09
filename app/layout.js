@@ -1,6 +1,19 @@
 import "./globals.css";
+import { Manrope, Fraunces } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+
+const manrope = Manrope({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-manrope",
+  display: "swap",
+});
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  display: "swap",
+});
 
 export const metadata = {
   metadataBase: new URL("https://myhomestaging.ru"),
@@ -25,7 +38,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang="ru" suppressHydrationWarning className={`${manrope.variable} ${fraunces.variable}`}>
       <body>
         <ThemeProvider>
           {children}

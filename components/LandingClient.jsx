@@ -33,26 +33,20 @@ const serviceColors = [
 const BeforeAfter = ({ beforeLabel, afterLabel, beforeUrl, afterUrl, projectTitle }) => (
   <div className="grid gap-3 grid-cols-2">
     <div className="relative">
-      <div className="aspect-[3/4] overflow-hidden bg-[#E8DED6]">
-        <img
-          src={beforeUrl}
-          alt={`Хоум стейджинг квартиры в Москве — ${beforeLabel.toLowerCase()}${projectTitle ? `, ${projectTitle}` : ""}`}
-          className="h-full w-full object-cover"
-          loading="lazy"
-        />
+      <div className="relative aspect-[3/4] overflow-hidden bg-[#E8DED6]">
+        {beforeUrl ? (
+          <Image src={beforeUrl} alt={`Хоум стейджинг квартиры в Москве — ${beforeLabel.toLowerCase()}${projectTitle ? `, ${projectTitle}` : ""}`} fill className="object-cover" sizes="(max-width: 1024px) 50vw, 25vw" />
+        ) : null}
       </div>
       <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 text-xs font-semibold tracking-wider text-[#333333] uppercase">
         {beforeLabel}
       </div>
     </div>
     <div className="relative">
-      <div className="aspect-[3/4] overflow-hidden bg-[#E8DED6]">
-        <img
-          src={afterUrl}
-          alt={`Комплектация квартиры в Москве — ${afterLabel.toLowerCase()} после подготовки${projectTitle ? `, ${projectTitle}` : ""}`}
-          className="h-full w-full object-cover"
-          loading="lazy"
-        />
+      <div className="relative aspect-[3/4] overflow-hidden bg-[#E8DED6]">
+        {afterUrl ? (
+          <Image src={afterUrl} alt={`Комплектация квартиры в Москве — ${afterLabel.toLowerCase()} после подготовки${projectTitle ? `, ${projectTitle}` : ""}`} fill className="object-cover" sizes="(max-width: 1024px) 50vw, 25vw" />
+        ) : null}
       </div>
       <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 text-xs font-semibold tracking-wider text-[#333333] uppercase">
         {afterLabel}
