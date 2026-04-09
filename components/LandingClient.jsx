@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation";
 import { ArrowRight, Phone, Send, MessageCircle } from "lucide-react";
 
+import Image from "next/image";
 import SiteHeader from "@/components/SiteHeader";
 import { api } from "@/lib/api";
 
@@ -263,13 +264,17 @@ export default function LandingClient({ content }) {
                 </div>
               </div>
               <div className="flex items-stretch">
-                <div className="w-full aspect-[4/3] overflow-hidden">
-                  <img
-                    src={hero.photoUrl || ""}
-                    alt="Хоум стейджинг квартиры в Москве — пример интерьера"
-                    className="h-full w-full object-cover"
-                    loading="eager"
-                  />
+                <div className="relative w-full aspect-[4/3] overflow-hidden">
+                  {hero.photoUrl ? (
+                    <Image
+                      src={hero.photoUrl}
+                      alt="Хоум стейджинг квартиры в Москве — пример интерьера"
+                      fill
+                      className="object-cover"
+                      priority
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                    />
+                  ) : null}
                 </div>
               </div>
             </div>
