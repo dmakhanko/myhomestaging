@@ -26,7 +26,7 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "ru_RU",
-    url: "https://myhomestaging.ru/",
+    url: "https://myhomestaging.ru",
     siteName: "Квартирный стилист",
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
