@@ -36,9 +36,32 @@ export const metadata = {
   robots: { index: true, follow: true },
 };
 
+const professionalServiceJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: "Квартирный стилист",
+  description: "Профессиональный хоумстейджинг квартир в Москве — подготовка к продаже и сдаче в аренду",
+  url: "https://myhomestaging.ru",
+  image: "https://myhomestaging.ru/og-image.jpg",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Москва",
+    addressCountry: "RU",
+  },
+  areaServed: "Москва и Московская область",
+  serviceType: "Хоумстейджинг",
+  priceRange: "от 400 000 ₽",
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="ru" suppressHydrationWarning className={`${manrope.variable} ${fraunces.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(professionalServiceJsonLd) }}
+        />
+      </head>
       <body>
         <ThemeProvider>
           {children}

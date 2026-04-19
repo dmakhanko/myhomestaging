@@ -23,17 +23,27 @@ export default function BlogPostClient({ content, post }) {
   const socialLinks = post.socialLinks || {};
   const hasSocialLinks = Object.values(socialLinks).some(Boolean);
 
-  // JSON-LD BlogPosting structured data
+  const BASE_URL = "https://myhomestaging.ru";
+  const rawImage = photos[0] || `${BASE_URL}/og-image.jpg`;
+  const absoluteImage = rawImage.startsWith("http") ? rawImage : `${BASE_URL}${rawImage}`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
     description: post.excerpt || post.title,
-    image: photos[0] || "https://myhomestaging.ru/og-image.jpg",
+    image: absoluteImage,
     datePublished: post.publishedAt,
-    url: `https://myhomestaging.ru/blog/${post.slug}`,
+    dateModified: post.updatedAt || post.publishedAt,
+    url: `${BASE_URL}/blog/${post.slug}`,
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${BASE_URL}/blog/${post.slug}` },
     author: { "@type": "Person", name: "Оксана Фурсова" },
-    publisher: { "@type": "Organization", name: "Квартирный стилист", url: "https://myhomestaging.ru" },
+    publisher: {
+      "@type": "Organization",
+      name: "Квартирный стилист",
+      url: BASE_URL,
+      logo: { "@type": "ImageObject", url: `${BASE_URL}/logo.png` },
+    },
   };
 
   return (

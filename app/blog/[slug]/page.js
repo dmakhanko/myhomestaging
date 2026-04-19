@@ -14,11 +14,11 @@ export async function generateMetadata({ params }) {
   const ogImage = (post.photos || [])[0] || "https://myhomestaging.ru/og-image.jpg";
 
   return {
-    title: `${post.title} | Квартирный стилист`,
+    title: post.title,
     description: post.excerpt || post.title,
     alternates: { canonical: `https://myhomestaging.ru/blog/${post.slug}` },
     openGraph: {
-      title: `${post.title} | Квартирный стилист`,
+      title: post.title,
       description: post.excerpt || post.title,
       url: `https://myhomestaging.ru/blog/${post.slug}`,
       type: "article",
