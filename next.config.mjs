@@ -1,15 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone", // Оптимальная сборка для VPS (минимум зависимостей)
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "fursova-staging-production.up.railway.app",
-      },
-    ],
+    // Медиа теперь отдаётся с того же домена — внешние паттерны не нужны
+    remotePatterns: [],
   },
-  // Разрешаем внешние домены для img (фото с Railway бэкенда)
   async headers() {
     return [
       {
