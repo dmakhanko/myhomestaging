@@ -1,7 +1,8 @@
 import { downloadFromGridFS } from "@/lib/gridfs";
 
 export async function GET(request, { params }) {
-  const result = await downloadFromGridFS(params.fileId);
+  const { fileId } = await params;
+  const result = await downloadFromGridFS(fileId);
   if (!result) {
     return Response.json({ detail: "Not found" }, { status: 404 });
   }
