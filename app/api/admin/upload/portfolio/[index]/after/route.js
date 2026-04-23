@@ -6,7 +6,8 @@ export async function POST(request, { params }) {
   const authError = requireAuth(request);
   if (authError) return authError;
 
-  const index = parseInt(params.index);
+  const { index: indexStr } = await params;
+  const index = parseInt(indexStr);
   const formData = await request.formData();
   const file = formData.get("file");
   if (!file) return Response.json({ detail: "No file" }, { status: 400 });
