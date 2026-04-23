@@ -497,7 +497,7 @@ export default function AdminV2() {
               className="m3-btn-dark"
               onClick={async () => {
                 try {
-                  const res = await admin.post("/admin/migrate-media-urls");
+                  const res = await api.post("/admin/migrate-media-urls");
                   const d = res.data;
                   if (d.changes?.length > 0) {
                     toast.success(`Исправлено ${d.changes.length} URL. Перезагружаю страницу...`);
