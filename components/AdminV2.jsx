@@ -1080,7 +1080,7 @@ export default function AdminV2() {
                             headers: { "Content-Type": "multipart/form-data" },
                           });
                           toast.success("Логотип загружен");
-                          refetch();
+                          await loadContent();
                         } catch (err) {
                           console.error("Upload error:", err);
                           toast.error("Не удалось загрузить логотип");
