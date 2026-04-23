@@ -493,6 +493,25 @@ export default function AdminV2() {
                 </div>
               </DialogContent>
             </Dialog>
+            <Button
+              className="m3-btn-dark"
+              onClick={async () => {
+                try {
+                  const res = await admin.post("/admin/migrate-media-urls");
+                  const d = res.data;
+                  if (d.changes?.length > 0) {
+                    toast.success(`Исправлено ${d.changes.length} URL. Перезагружаю страницу...`);
+                    setTimeout(() => window.location.reload(), 1500);
+                  } else {
+                    toast.info("Railway URL не найдены — всё уже в порядке");
+                  }
+                } catch {
+                  toast.error("Ошибка миграции");
+                }
+              }}
+            >
+              Восстановить фото
+            </Button>
             <Button className="m3-btn-dark" onClick={logout}>
               Выйти
             </Button>
