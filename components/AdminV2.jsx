@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Check, Eye, EyeOff, Key, RotateCcw, Save, Upload } from "lucide-react";
 
-import { admin, setAuthToken, BACKEND_URL } from "@/lib/api";
+import { api, admin, setAuthToken, BACKEND_URL } from "@/lib/api";
 import { optimizeImage, getCompressionRatio } from "@/lib/imageOptimizer";
 
 function resolveMediaUrls(value) {
