@@ -1,5 +1,7 @@
 import { getSiteContent } from "@/lib/content";
 import BlogPostClient from "@/components/BlogPostClient";
+
+export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }) {

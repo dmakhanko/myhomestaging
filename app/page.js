@@ -1,6 +1,8 @@
 import { getSiteContent } from "@/lib/content";
 import LandingClient from "@/components/LandingClient";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Хоумстейджинг в Москве — подготовка квартир | Квартирный стилист",
   description:

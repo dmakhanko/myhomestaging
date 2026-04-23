@@ -1,6 +1,8 @@
 import { getSiteContent } from "@/lib/content";
 import BlogClient from "@/components/BlogClient";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Блог о хоумстейджинге",
   description:

@@ -1,6 +1,8 @@
 import { getSiteContent } from "@/lib/content";
 import PortfolioClient from "@/components/PortfolioClient";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Портфолио — кейсы хоумстейджинга",
   description:
