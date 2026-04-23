@@ -35,7 +35,7 @@ export default function SiteHeader({ brand, nav, onNav, rightSlot, subtitle = ""
               height={48}
               width={0}
               className="h-12 shrink-0 object-contain mix-blend-multiply"
-              style={{ width: "auto", filter: "invert(1)" }}
+              style={{ width: "auto" }}
               priority
             />
           ) : null}
