@@ -33,9 +33,9 @@ export default function SiteHeader({ brand, nav, onNav, rightSlot, subtitle = ""
               src={brand.logoUrl}
               alt={brand?.name || "Logo"}
               height={48}
-              width={0}
-              className="h-12 shrink-0 object-contain mix-blend-multiply"
-              style={{ width: "auto" }}
+              width={48}
+              className="h-12 w-auto shrink-0 object-contain mix-blend-multiply"
+              unoptimized
               priority
             />
           ) : null}
