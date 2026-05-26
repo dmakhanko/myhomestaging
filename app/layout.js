@@ -43,6 +43,7 @@ const professionalServiceJsonLd = {
   description: "Профессиональный хоумстейджинг квартир в Москве — подготовка к продаже и сдаче в аренду",
   url: "https://myhomestaging.ru",
   image: "https://myhomestaging.ru/og-image.jpg",
+  telephone: "+7-905-516-04-43",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Москва",
@@ -64,6 +65,10 @@ const professionalServiceJsonLd = {
     "@type": "Person",
     name: "Оксана Фурсова",
   },
+  sameAs: [
+    "https://t.me/kvartirniystylist",
+    "https://www.avito.ru/user/a28a12dbb364d1301a3340600b632419/profile",
+  ],
 };
 
 export default function RootLayout({ children }) {
