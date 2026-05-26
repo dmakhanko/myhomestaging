@@ -46,11 +46,24 @@ const professionalServiceJsonLd = {
   address: {
     "@type": "PostalAddress",
     addressLocality: "Москва",
+    addressRegion: "Москва",
     addressCountry: "RU",
   },
-  areaServed: "Москва и Московская область",
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 55.7558,
+    longitude: 37.6173,
+  },
+  areaServed: {
+    "@type": "Place",
+    name: "Москва и Московская область",
+  },
   serviceType: "Хоумстейджинг",
   priceRange: "от 400 000 ₽",
+  founder: {
+    "@type": "Person",
+    name: "Оксана Фурсова",
+  },
 };
 
 export default function RootLayout({ children }) {

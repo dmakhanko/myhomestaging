@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { requireAuth } from "@/lib/auth";
 import { uploadToGridFS, deleteFromGridFS, extractFileId } from "@/lib/gridfs";
 import { getSiteContentFromDb, saveSiteContentToDb, deepMerge } from "@/lib/siteContent";
@@ -32,5 +33,6 @@ export async function POST(request, { params }) {
 
   cards[index] = { ...cards[index], afterUrl: url };
   await saveSiteContentToDb(deepMerge(current, { portfolio: { cards } }));
+  revalidatePath("/", "layout");
   return Response.json({ file_id: fileId, url });
 }

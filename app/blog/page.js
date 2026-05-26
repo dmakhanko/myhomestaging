@@ -1,7 +1,9 @@
 import { getSiteContent } from "@/lib/content";
 import BlogClient from "@/components/BlogClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+const BASE_URL = "https://myhomestaging.ru";
 
 export const metadata = {
   title: "Блог о хоумстейджинге",
@@ -16,7 +18,24 @@ export const metadata = {
   },
 };
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Главная", item: BASE_URL },
+    { "@type": "ListItem", position: 2, name: "Блог", item: `${BASE_URL}/blog` },
+  ],
+};
+
 export default async function BlogPage() {
   const content = await getSiteContent();
-  return <BlogClient content={content} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <BlogClient content={content} />
+    </>
+  );
 }

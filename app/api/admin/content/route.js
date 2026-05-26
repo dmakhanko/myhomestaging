@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { requireAuth } from "@/lib/auth";
 import { getSiteContentFromDb, saveSiteContentToDb, deepMerge } from "@/lib/siteContent";
 
@@ -15,6 +16,7 @@ export async function PUT(request) {
 
   const { content } = await request.json();
   await saveSiteContentToDb(content);
+  revalidatePath("/", "layout");
   return Response.json({ ok: true });
 }
 
@@ -26,5 +28,6 @@ export async function PATCH(request) {
   const current = await getSiteContentFromDb();
   const merged = deepMerge(current, patch);
   await saveSiteContentToDb(merged);
+  revalidatePath("/", "layout");
   return Response.json({ ok: true });
 }

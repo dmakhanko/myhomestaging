@@ -1,8 +1,10 @@
 import { getSiteContent } from "@/lib/content";
 import BlogPostClient from "@/components/BlogPostClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 import { notFound } from "next/navigation";
+
+const BASE_URL = "https://myhomestaging.ru";
 
 export async function generateMetadata({ params }) {
   const content = await getSiteContent();
@@ -36,5 +38,23 @@ export default async function BlogPostPage({ params }) {
 
   if (!post) notFound();
 
-  return <BlogPostClient content={content} post={post} />;
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Главная", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Блог", item: `${BASE_URL}/blog` },
+      { "@type": "ListItem", position: 3, name: post.title, item: `${BASE_URL}/blog/${post.slug}` },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <BlogPostClient content={content} post={post} />
+    </>
+  );
 }

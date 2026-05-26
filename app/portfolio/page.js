@@ -1,7 +1,9 @@
 import { getSiteContent } from "@/lib/content";
 import PortfolioClient from "@/components/PortfolioClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+const BASE_URL = "https://myhomestaging.ru";
 
 export const metadata = {
   title: "Портфолио — кейсы хоумстейджинга",
@@ -16,7 +18,55 @@ export const metadata = {
   },
 };
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Главная", item: BASE_URL },
+    { "@type": "ListItem", position: 2, name: "Портфолио", item: `${BASE_URL}/portfolio` },
+  ],
+};
+
+function toAbsoluteUrl(path) {
+  if (!path) return undefined;
+  if (path.startsWith("http")) return path;
+  return `${BASE_URL}${path}`;
+}
+
+function buildItemListJsonLd(cards) {
+  if (!cards || cards.length === 0) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Кейсы хоумстейджинга — портфолио",
+    itemListElement: cards.map((card, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `${BASE_URL}/portfolio#${card.id}`,
+      name: card.title,
+      image: toAbsoluteUrl(card.afterUrl),
+    })),
+  };
+}
+
 export default async function PortfolioPage() {
   const content = await getSiteContent();
-  return <PortfolioClient content={content} />;
+  const cards = content?.portfolio?.cards || [];
+  const itemListJsonLd = buildItemListJsonLd(cards);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      {itemListJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+        />
+      )}
+      <PortfolioClient content={content} />
+    </>
+  );
 }
