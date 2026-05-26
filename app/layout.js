@@ -43,7 +43,7 @@ const professionalServiceJsonLd = {
   description: "Профессиональный хоумстейджинг квартир в Москве — подготовка к продаже и сдаче в аренду",
   url: "https://myhomestaging.ru",
   image: "https://myhomestaging.ru/og-image.jpg",
-  telephone: "+7-905-516-04-43",
+  telephone: "+7-926-718-14-00",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Москва",
