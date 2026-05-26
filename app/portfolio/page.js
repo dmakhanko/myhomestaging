@@ -1,7 +1,7 @@
 import { getSiteContent } from "@/lib/content";
 import PortfolioClient from "@/components/PortfolioClient";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 const BASE_URL = "https://myhomestaging.ru";
 

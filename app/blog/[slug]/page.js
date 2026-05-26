@@ -1,7 +1,7 @@
 import { getSiteContent } from "@/lib/content";
 import BlogPostClient from "@/components/BlogPostClient";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 
 const BASE_URL = "https://myhomestaging.ru";
