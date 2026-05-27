@@ -13,6 +13,13 @@ const nextConfig = {
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
         ],
       },
+      {
+        source: "/((?!_next/static|_next/image|api/media).*)",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
+          { key: "CDN-Cache-Control", value: "s-maxage=60, stale-while-revalidate=600" },
+        ],
+      },
     ];
   },
 };
