@@ -18,12 +18,12 @@ for p in "${PAGES[@]}"; do
     failures=$((failures + 1))
     continue
   fi
-  if ! echo "$html" | grep -q '<h1'; then
+  if ! grep -q '<h1' <<<"$html"; then
     echo "FAIL $p — no <h1> in HTML"
     failures=$((failures + 1))
     continue
   fi
-  if ! echo "$html" | grep -q 'application/ld+json'; then
+  if ! grep -q 'application/ld+json' <<<"$html"; then
     echo "FAIL $p — no JSON-LD"
     failures=$((failures + 1))
     continue
