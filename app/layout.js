@@ -1,16 +1,21 @@
 import "./globals.css";
-import { Manrope, Fraunces } from "next/font/google";
+import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
-const manrope = Manrope({
-  subsets: ["latin", "cyrillic"],
+const manrope = localFont({
+  src: [
+    { path: "./fonts/manrope-latin-wght-normal.woff2", weight: "200 800", style: "normal" },
+    { path: "./fonts/manrope-cyrillic-wght-normal.woff2", weight: "200 800", style: "normal" },
+  ],
   variable: "--font-manrope",
   display: "swap",
 });
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
+const fraunces = localFont({
+  src: "./fonts/fraunces-latin-wght-normal.woff2",
+  weight: "100 900",
+  style: "normal",
   variable: "--font-fraunces",
   display: "swap",
 });
