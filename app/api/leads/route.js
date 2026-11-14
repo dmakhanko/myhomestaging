@@ -3,11 +3,17 @@ import { requireAuth } from "@/lib/auth";
 
 async function sendLeadEmail(lead, db) {
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return;
+  if (!apiKey) {
+    console.warn("[leads] email skipped: RESEND_API_KEY not set");
+    return;
+  }
 
   const doc = await db.collection("site_content").findOne({ _id: "default" });
   const notifyEmail = doc?.content?.settings?.notifyEmail;
-  if (!notifyEmail) return;
+  if (!notifyEmail) {
+    console.warn("[leads] email skipped: notifyEmail not set in admin settings");
+    return;
+  }
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -24,7 +30,7 @@ async function sendLeadEmail(lead, db) {
     </div>
   `;
 
-  await fetch("https://api.resend.com/emails", {
+  const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -36,11 +42,41 @@ async function sendLeadEmail(lead, db) {
       subject: `🏠 Новая заявка: ${lead.name || "Без имени"} — ${lead.phone}`,
       html,
     }),
-  }).catch(() => {});
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) console.error("[leads] email failed:", res.status, await res.text().catch(() => ""));
+}
+
+
+// SMS о новой заявке через SMS.ru. Номера — в SMS_NOTIFY_TO через запятую.
+async function sendLeadSms(lead) {
+  const apiId = process.env.SMS_RU_API_ID;
+  const to = (process.env.SMS_NOTIFY_TO || "").replace(/[^0-9,]/g, "");
+  if (!apiId || !to) {
+    console.warn("[leads] SMS skipped: SMS_RU_API_ID or SMS_NOTIFY_TO not set");
+    return;
+  }
+  const text = `Заявка с сайта: ${lead.name || "без имени"}, ${lead.phone}. ${lead.message || ""}`
+    .replace(/\s+/g, " ")
+    .trim();
+  const msg = text.length > 130 ? text.slice(0, 127) + "..." : text;
+
+  const params = new URLSearchParams({ api_id: apiId, to, msg, json: "1" });
+  if (process.env.SMS_FROM) params.set("from", process.env.SMS_FROM);
+
+  const res = await fetch("https://sms.ru/sms/send", {
+    method: "POST",
+    body: params,
+    signal: AbortSignal.timeout(8000),
+  });
+  const data = await res.json().catch(() => null);
+  const failed = !data || data.status !== "OK" ||
+    Object.values(data.sms || {}).some((r) => r.status !== "OK");
+  if (failed) console.error("[leads] SMS failed:", JSON.stringify(data));
 }
 
 export async function POST(request) {
-  const { name = "", phone, message = "" } = await request.json();
+  const { name = "", phone, message = "", website = "" } = await request.json();
   if (!phone || phone.length < 7) {
     return Response.json({ detail: "Invalid phone" }, { status: 422 });
   }
@@ -54,8 +90,19 @@ export async function POST(request) {
     created_at: new Date().toISOString(),
   };
 
+  // Ловушка для ботов: поле website скрыто от людей. Заполнено — сохраняем как спам, без уведомлений.
+  if (website) {
+    await db.collection("leads").insertOne({ ...lead, spam: true });
+    return Response.json(lead);
+  }
+
   await db.collection("leads").insertOne(lead);
-  sendLeadEmail(lead, db); // fire and forget
+
+  // Ждём отправки: на Vercel функция останавливается после ответа, «выстрелил и забыл» теряет уведомления.
+  const results = await Promise.allSettled([sendLeadSms(lead), sendLeadEmail(lead, db)]);
+  results.forEach((r) => {
+    if (r.status === "rejected") console.error("[leads] notify error:", r.reason?.message || r.reason);
+  });
 
   return Response.json(lead);
 }
@@ -67,7 +114,7 @@ export async function GET(request) {
   const db = await getDb();
   const leads = await db
     .collection("leads")
-    .find({}, { projection: { _id: 0 } })
+    .find({ spam: { $ne: true } }, { projection: { _id: 0 } })
     .sort({ created_at: -1 })
     .toArray();
 
