@@ -109,7 +109,7 @@ export default function LandingClient({ content }) {
 
   const refMap = useRef({});
   const [activeSection, setActiveSection] = useState("about");
-  const [form, setForm] = useState({ name: "", phone: "", message: "", service: "" });
+  const [form, setForm] = useState({ name: "", phone: "", message: "", service: "", website: "" });
   const [submitting, setSubmitting] = useState(false);
 
   const brand = content?.brand || {};
@@ -173,8 +173,9 @@ export default function LandingClient({ content }) {
         name: form.name.trim(),
         phone: form.phone.trim(),
         message: form.service ? `[${form.service}] ${form.message.trim()}` : form.message.trim(),
+        website: form.website,
       });
-      setForm({ name: "", phone: "", message: "", service: "" });
+      setForm({ name: "", phone: "", message: "", service: "", website: "" });
       toast.success("Заявка отправлена! Мы свяжемся с вами в ближайшее время.");
     } catch {
       toast.error("Не удалось отправить заявку. Попробуйте позже или позвоните нам.");
@@ -346,6 +347,10 @@ export default function LandingClient({ content }) {
                   )}
                   <Input value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} placeholder="Телефон *" className="rounded-xl border-[#E6E1D7] bg-white placeholder:text-[#787878] h-12" disabled={submitting} />
                   <Textarea value={form.message} onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))} placeholder="Краткое описание квартиры: город, район, ЖК, общий метраж, наличие ремонта" className="min-h-[100px] rounded-xl border-[#E6E1D7] bg-white placeholder:text-[#787878]" disabled={submitting} />
+                  {/* Ловушка для ботов: людям не видна, боты заполняют */}
+                  <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
+                    <input type="text" name="website" tabIndex={-1} autoComplete="off" value={form.website} onChange={(e) => setForm((p) => ({ ...p, website: e.target.value }))} />
+                  </div>
                   <Button type="submit" className="w-full rounded-xl bg-[#333333] py-6 text-sm font-medium text-white hover:bg-[#1a1a1a]" disabled={submitting}>
                     {submitting ? "Отправка..." : "Оставить заявку"}
                     <ArrowRight className="ml-2 h-4 w-4" />
