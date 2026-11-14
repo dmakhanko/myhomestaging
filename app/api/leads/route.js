@@ -48,6 +48,39 @@ async function sendLeadEmail(lead, db) {
 }
 
 
+const escapeHtml = (v) =>
+  String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+// Уведомление о заявке в Telegram. Получатели — TELEGRAM_CHAT_IDS через запятую.
+async function sendLeadTelegram(lead) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatIds = (process.env.TELEGRAM_CHAT_IDS || "").split(",").map((x) => x.trim()).filter(Boolean);
+  if (!token || chatIds.length === 0) {
+    console.warn("[leads] Telegram skipped: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_IDS not set");
+    return;
+  }
+  const when = new Date(lead.created_at).toLocaleString("ru-RU", { timeZone: "Europe/Moscow" });
+  const text = [
+    "🏠 <b>Новая заявка с сайта</b>",
+    "",
+    `<b>Имя:</b> ${escapeHtml(lead.name) || "—"}`,
+    `<b>Телефон:</b> ${escapeHtml(lead.phone)}`,
+    `<b>Сообщение:</b> ${escapeHtml(lead.message) || "—"}`,
+    "",
+    `<i>${when} МСК · myhomestaging.ru</i>`,
+  ].join("\n");
+
+  await Promise.all(chatIds.map(async (chat_id) => {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id, text, parse_mode: "HTML", disable_web_page_preview: true }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) console.error("[leads] Telegram failed:", chat_id, res.status, await res.text().catch(() => ""));
+  }));
+}
+
 // SMS о новой заявке через SMS.ru. Номера — в SMS_NOTIFY_TO через запятую.
 async function sendLeadSms(lead) {
   const apiId = process.env.SMS_RU_API_ID;
@@ -99,7 +132,7 @@ export async function POST(request) {
   await db.collection("leads").insertOne(lead);
 
   // Ждём отправки: на Vercel функция останавливается после ответа, «выстрелил и забыл» теряет уведомления.
-  const results = await Promise.allSettled([sendLeadSms(lead), sendLeadEmail(lead, db)]);
+  const results = await Promise.allSettled([sendLeadTelegram(lead), sendLeadSms(lead), sendLeadEmail(lead, db)]);
   results.forEach((r) => {
     if (r.status === "rejected") console.error("[leads] notify error:", r.reason?.message || r.reason);
   });
